@@ -1,0 +1,149 @@
+<head>
+<script type = "text/javascript" src = "http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+<script type="text/javascript"> 
+    
+    // DELETE ajax call for DELETE method
+    $(document).ready(function(){
+        $(".delete").on('click',(function(e){
+            $target =  $(e.target);
+            var id = $target.attr('user-id');
+            // var url = $target.attr('href');
+            var JWTToken = localStorage.getItem('token');
+            $.ajax({
+                url: '/api/users/'+id,
+                type: 'DELETE',
+                contentType: 'application/json; charset=utf-8',
+                beforeSend: function (xhr) {
+                    /* Set the Authorization header here*/
+                    xhr.setRequestHeader("Authorization", "Bearer " + JWTToken);
+                },
+                success: function(response){
+                    window.location = '/users';
+                },
+                error: function(err){
+                    console.log(err);
+                }
+            });
+        }));
+    }); 
+
+</script>        
+</head>
+
+<body>
+    <!-- Sidenav -->
+    <%- include ('../partials/sidebar') %>
+    <!-- Main content -->
+    <div class="main-content">
+      <!-- Top navbar -->
+      <%- include ('../partials/navbar') %>
+      <!-- Header -->
+      <%- include ('../partials/header') %>
+      <!-- Page content -->
+      <div class="container-fluid mt--7">
+            <!-- Table -->
+            <!-- Dark table -->
+            <div class="row mt-5">
+            <div class="col mt-7">
+                <div id="data"></div>
+
+                <ul class="nav nav-pills justify-content-end">
+                    <li class="nav-item mr-2 mr-md-4" >
+                      <a href="/addUser" class="nav-link py-2 px-3 active">
+                        <span class="d-none d-md-block" >+ Add User</span>
+                        <!-- <span class="d-md-none">M</span> -->
+                      </a>
+                    </li>
+                </ul>
+                <div class="card bg-default shadow">
+                    <div class="card-header bg-transparent border-0">
+                    <h3 class="text-white mb-0">User tables</h3>
+                    <!-- <div class="media-body ml-2 d-none d-lg-block"><a href="">add user</a></div> -->
+                </div>
+                <div class="table-responsive">
+                    <table class="table align-items-center table-dark table-flush">
+                    <thead class="thead-dark">
+                        <tr>
+                        <th scope="col">Id</th>
+                        <th scope="col">FirstName</th>
+                        <th scope="col">LastName</th>
+                        <th scope="col">Email</th>
+                        <th scope="col">Gender</th>
+                        <th scope="col">Birthdate</th>
+                        <th scope="col"></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    <% user.forEach(function(users) {  %>
+                        <tr>
+                        <td scope="row">
+                            <div class="media align-items-center">
+                            <div class="media-body">
+                                <span class="mb-0 text-sm"><%= users.id %></span>
+                            </div>
+                            </div>
+                        </td>
+                        <td scope="row">
+                            <div class="media align-items-center">
+                            <div class="media-body">
+                                <span class="mb-0 text-sm"><%= users.firstName %></span>
+                            </div>
+                            </div>
+                        </td>
+                        <td scope="row">
+                            <div class="media align-items-center">
+                            <div class="media-body">
+                                <span class="mb-0 text-sm"><%= users.lastName %></span>
+                            </div>
+                            </div>
+                        </td>
+                        <td scope="row">
+                            <div class="media align-items-center">
+                            <div class="media-body">
+                                <span class="mb-0 text-sm"><%= users.email %></span>
+                            </div>
+                            </div>
+                        </td>
+                        <td scope="row">
+                            <div class="media align-items-center">
+                            <div class="media-body">
+                                <span class="mb-0 text-sm"><%= users.gender %></span>
+                            </div>
+                            </div>
+                        </td>
+                        <td scope="row">
+                            <div class="media align-items-center">
+                            <div class="media-body">
+                                <span class="mb-0 text-sm"><%= users.birthdate %></span>
+                            </div>
+                            </div>
+                        </td>
+                        <td class="text-right">
+                            <div class="dropdown">
+                            <a class="btn btn-sm btn-icon-only text-light" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <i class="fas fa-ellipsis-v"></i>
+                            </a>
+                            <div class="dropdown-menu dropdown-menu-right dropdown-menu-arrow">
+                                <a class="dropdown-item edit" href="/editUser/<%= users.id %>">Edit</a>
+                                <a class="dropdown-item delete" href="" user-id="<%= users.id %>">Delete</a>
+                                <a class="dropdown-item" href="#">Info</a> 
+                            </div>
+                            </div>
+                        </td>
+                        </tr>
+                        <% }) %>
+                    </tbody>
+                    </table>
+                </div>
+                </div>
+            </div>
+            </div>
+        <!-- Footer -->
+        <%- include ('../partials/footer') %>
+      </div>
+    </div>
+  
+    <!-- Include scripts -->
+    <%- include ('../partials/scripts') %>
+  </body>
+  
