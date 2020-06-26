@@ -30,6 +30,12 @@
                     success: function(response){
                         console.log(response);
                         window.location.href = '/users';
+                    },
+                    error: function(err){
+                        // console.log(err.responseJSON.code);
+                        if (err.responseJSON.code == 403) {
+                            window.location.href = '/404';
+                        }
                     }
                 });
             }))

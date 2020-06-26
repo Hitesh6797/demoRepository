@@ -1,3 +1,24 @@
+<script>
+  var JWTToken = localStorage.getItem('token');
+
+  $.ajax({
+    url: "/icons",
+    type: 'GET',
+    // data: formData,
+    contentType: 'application/json; charset=utf-8',
+    beforeSend: function (xhr) {
+        /* Set the Authorization header here*/
+        xhr.setRequestHeader("Authorization", "Bearer " + JWTToken);
+      },
+    success: function(response){
+        window.location = '/icons';
+      },
+    error: function(err){
+        console.log(err);
+      }
+  });
+</script>
+
 <body>
     <!-- Sidenav -->
     <%- include ('../partials/sidebar') %>

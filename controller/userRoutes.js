@@ -1,7 +1,8 @@
 const fetch = require('node-fetch');
 const config = require('../env/config');
 const { users } = require('../util/database');
-    
+const jwt = require("jsonwebtoken");
+
 module.exports = function(app) {
     
     const users = require('../controller/userController');
@@ -80,6 +81,10 @@ module.exports = function(app) {
     app.get('/addUser', function(req,res) {
         res.render('pages/addUser');
     });
+
+    app.get('/404', function(req,res) {
+        res.render('pages/404');
+    });
     
     app.get('/dashboard',function(req,res)  {
         res.render('pages/dashboard')
@@ -93,9 +98,20 @@ module.exports = function(app) {
     //     res.render('pages/profile');
     // });
       
-    // app.get('/icons', function(req, res) {
-    //     res.render('pages/icons');
-    // });
+    app.get('/icons', (req, res) => {
+        jwt.verify(req.token, config.accessTokenSecret, (err, authorizedData) => {
+            if(err){
+                //If error send Forbidden (403)
+                console.log(err);            
+                res.status(403).send({
+                    code: 403,
+                    "message": "invalid jwt given!"
+                });
+            } else {
+                res.render('pages/icons');
+            }
+        });
+    });
         
     app.get('/tables' , function(req, res) {
         res.render('pages/tables');

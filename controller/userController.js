@@ -88,9 +88,11 @@ exports.update = (req,res) => {
     jwt.verify(req.token, config.accessTokenSecret, (err, authorizedData) => {
         if(err){
             //If error send Forbidden (403)
-            console.log(err);
-            // console.log('ERROR: Could not connect to the protected route');
-            res.sendStatus(403);
+            console.log(err);            
+            res.status(403).send({
+                code: 403,
+                "message": "invalid jwt given!"
+            });
         } else {
             const id = req.params.id;
             User.update({ 
@@ -117,8 +119,11 @@ exports.delete = (req,res) => {
     jwt.verify(req.token, config.accessTokenSecret, (err, authorizedData) => {
         if(err){
             //If error send Forbidden (403)
-            console.log(err);
-            res.sendStatus(403);
+            console.log(err);            
+            res.status(403).send({
+                code: 403,
+                "message": "invalid jwt given!"
+            });
         } else {            
             const id = req.params.id;
             User.destroy({where: { id: id}})
@@ -182,7 +187,7 @@ exports.login = (req, res) => {
 };
 exports.checkToken = (req, res, next) => {
     const header = req.headers['authorization'];
-
+    // const token = localStorage.getItem('token');
     if(typeof header !== 'undefined') {
         const bearer = header.split(' ');
         const token = bearer[1];
@@ -196,7 +201,7 @@ exports.checkToken = (req, res, next) => {
             "message": "forbidden"
         })
     }
-}; 
+};  
 // // Logout 
 // exports.logout = (req,res) => {
 //     accessToken = null;

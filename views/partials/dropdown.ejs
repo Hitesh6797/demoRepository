@@ -1,3 +1,19 @@
+<head>
+  <script type = "text/javascript" src = "http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+  <script type="text/javascript"> 
+      
+      // DELETE ajax call for DELETE method
+      $(document).ready(function(){
+          $(".logout").on('click',(function(e){
+              $target =  $(e.target);
+              // var id = $target.attr('user-id');
+              // var url = $target.attr('href');
+              localStorage.removeItem('token');
+          }));
+      }); 
+  
+  </script>        
+  </head>
 <div class="dropdown-menu dropdown-menu-arrow dropdown-menu-right">
     <div class=" dropdown-header noti-title">
       <h6 class="text-overflow m-0">Welcome!</h6>

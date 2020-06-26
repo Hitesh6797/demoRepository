@@ -21,7 +21,10 @@
                     window.location = '/users';
                 },
                 error: function(err){
-                    console.log(err);
+                    // console.log(err.responseJSON.code);
+                    if (err.responseJSON.code == 403) {
+                        window.location.href = '/404';
+                    }
                 }
             });
         }));

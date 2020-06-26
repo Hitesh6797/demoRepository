@@ -1,3 +1,34 @@
+<head>
+  <script type = "text/javascript" src = "http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+  <script type="text/javascript"> 
+
+    $(document).ready(function(){
+      $(".icon").on('click',(function(e){
+          $target =  $(e.target);
+          // var id = $target.attr('user-id');
+          var url = $target.attr('href');
+          var JWTToken = localStorage.getItem('token');
+          $.ajax({
+              url: url,
+              type: 'GET',
+              contentType: 'application/json; charset=utf-8',
+              beforeSend: function (xhr) {
+                  /* Set the Authorization header here*/
+                  xhr.setRequestHeader("Authorization", "Bearer " + JWTToken);
+              },
+              success: function(response){
+                  window.location = '/icons';
+              },
+              error: function(err){
+                  console.log(err);
+              }
+          });
+      }));
+    }); 
+
+</script>        
+</head>
+
 <nav class="navbar navbar-vertical fixed-left navbar-expand-md navbar-light bg-white" id="sidenav-main">
     <div class="container-fluid">
       <!-- Toggler -->
@@ -72,12 +103,12 @@
             <a class="nav-link" href="/profile">
               <i class="ni ni-single-02 text-yellow"></i> User profile
             </a>
-          </li>
+          </li> -->
           <li class="nav-item">
-            <a class="nav-link" href="/icons">
+            <a class="nav-link icon" href="/icons">
               <i class="ni ni-planet text-blue"></i> Icons
             </a>
-          </li> -->
+          </li>
           <!-- <li class="nav-item">
             <a class="nav-link" href="/maps">
               <i class="ni ni-pin-3 text-orange"></i> Maps
