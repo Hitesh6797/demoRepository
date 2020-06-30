@@ -1,32 +1,37 @@
 <head>
   <script type = "text/javascript" src = "http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
   <script type="text/javascript"> 
-
+      
+  
     $(document).ready(function(){
       $(".icon").on('click',(function(e){
           $target =  $(e.target);
           // var id = $target.attr('user-id');
-          var url = $target.attr('href');
+        //   var url = $target.attr('href');
           var JWTToken = localStorage.getItem('token');
           $.ajax({
-              url: url,
+              url: '/icons',
               type: 'GET',
+              // async:true,
               contentType: 'application/json; charset=utf-8',
               beforeSend: function (xhr) {
                   /* Set the Authorization header here*/
                   xhr.setRequestHeader("Authorization", "Bearer " + JWTToken);
               },
-              success: function(response){
-                  window.location = '/icons';
-              },
-              error: function(err){
-                  console.log(err);
-              }
+              // success: function(response){
+              //   return response;
+                // console.log(response);
+                // window.location = '/dashboard';
+              // }
+              // error: function(err){
+              //     // console.log(err);
+              //     window.location = '/403';
+              // }
           });
       }));
     }); 
 
-</script>        
+  </script>        
 </head>
 
 <nav class="navbar navbar-vertical fixed-left navbar-expand-md navbar-light bg-white" id="sidenav-main">
@@ -130,7 +135,7 @@
             </a>
           </li> -->
           <li class="nav-item">
-            <a class="nav-link" href="/users">
+            <a class="nav-link users" href="/users">
               <i class="ni ni-circle-08 text-black"></i>User Management
             </a>
           </li>

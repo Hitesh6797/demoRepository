@@ -8,7 +8,14 @@
               $target =  $(e.target);
               // var id = $target.attr('user-id');
               // var url = $target.attr('href');
-              localStorage.removeItem('token');
+              $.ajax({
+                url: '/logout',
+                type: 'GET',
+                contentType: 'application/json; charset=utf-8',
+                success: function(response){
+                    window.location = '/';
+                },
+              })
           }));
       }); 
   

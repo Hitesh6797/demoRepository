@@ -14,7 +14,7 @@ $('#adminLogin').on('submit', function(e) {
         contentType: 'application/json; charset=utf-8',     
         data: JSON.stringify(data),
         success: function(data) {
-            localStorage.setItem('token',data['x-access-token']);
+            // localStorage.setItem('token',data['x-access-token']);
             window.location.href = '/dashboard';
          },
          error: function(xhr,status){

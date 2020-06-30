@@ -5,16 +5,21 @@ const jwt = require("jsonwebtoken");
 // const dateFormat = require('dateformat');
 // Post user details to database
 
+if (typeof localStorage === "undefined" || localStorage === null) {
+    var LocalStorage = require('node-localstorage').LocalStorage;
+    var localStorage = new LocalStorage('./scratch');
+}
+    // console.log(localStorage);
 exports.create = (req,res) => {
-    jwt.verify(req.token, config.accessTokenSecret, (err, authorizedData) => {
-        if(err){
-            //If error send Forbidden (403)
-            console.log(err);            
-            res.status(403).send({
-                code: 403,
-                "message": "invalid jwt given!"
-            });
-        } else {
+    // jwt.verify(req.token, config.accessTokenSecret, (err, authorizedData) => {
+    //     if(err){
+    //         //If error send Forbidden (403)
+    //         console.log(err);            
+    //         res.status(403).send({
+    //             code: 403,
+    //             "message": "invalid jwt given!"
+    //         });
+    //     } else {
             User.create({
                 firstName: req.body.fname,
                 lastName: req.body.lname,
@@ -32,8 +37,8 @@ exports.create = (req,res) => {
             .catch(err => {
                 console.log(err);
             });    
-        }
-    });
+    //     }
+    // });
 };
 
 
@@ -81,19 +86,19 @@ exports.findByPk = (req,res) => {
             });
     //      };
     // });
-};
-
+};  
+  
 // Update User details by id
 exports.update = (req,res) => {
-    jwt.verify(req.token, config.accessTokenSecret, (err, authorizedData) => {
-        if(err){
-            //If error send Forbidden (403)
-            console.log(err);            
-            res.status(403).send({
-                code: 403,
-                "message": "invalid jwt given!"
-            });
-        } else {
+    // jwt.verify(req.token, config.accessTokenSecret, (err, authorizedData) => {
+    //     if(err){
+    //         //If error send Forbidden (403)
+    //         console.log(err);            
+    //         res.status(403).send({
+    //             code: 403,
+    //             "message": "invalid jwt given!"
+    //         });
+    //     } else {
             const id = req.params.id;
             User.update({ 
                 firstName: req.body.fname,
@@ -111,20 +116,20 @@ exports.update = (req,res) => {
             .catch(err => {
                 console.log(err);
             });
-        };
-    });
+    //     };
+    // });
 };
 // Delete user details by id
 exports.delete = (req,res) => {
-    jwt.verify(req.token, config.accessTokenSecret, (err, authorizedData) => {
-        if(err){
-            //If error send Forbidden (403)
-            console.log(err);            
-            res.status(403).send({
-                code: 403,
-                "message": "invalid jwt given!"
-            });
-        } else {            
+    // jwt.verify(req.token, config.accessTokenSecret, (err, authorizedData) => {
+    //     if(err){
+    //         //If error send Forbidden (403)
+    //         console.log(err);            
+    //         res.status(403).send({
+    //             code: 403,
+    //             "message": "invalid jwt given!"
+    //         });
+    //     } else {            
             const id = req.params.id;
             User.destroy({where: { id: id}})
             // .then(() => {
@@ -144,13 +149,13 @@ exports.delete = (req,res) => {
             .catch(err => {
                 console.log(err);
             });
-        };
-    });
+        //     };
+        // });
 };
-
+  
 // Login using admin and generate JWT token
 exports.login = (req, res) => {
-
+    
     if (req.body.email == "admin@argon.com" && req.body.password == "secret") {
         // Generate an access token
         const accessToken = jwt.sign(
@@ -158,11 +163,12 @@ exports.login = (req, res) => {
             config.accessTokenSecret,
             { expiresIn: '1h' },
         );
+        localStorage.setItem('token',accessToken);
+        // console.log(localStorage.getItem('token'));
         res.status(200).send({
             "code":200,
             "x-access-token": accessToken,
           });
-        
     } else if(req.body.email == "admin@argon.com" && req.body.password != "secret"){
         // return res.redirect(config.url);
         res.status(401).send({
@@ -185,25 +191,40 @@ exports.login = (req, res) => {
     }
 
 };
-exports.checkToken = (req, res, next) => {
-    const header = req.headers['authorization'];
-    // const token = localStorage.getItem('token');
-    if(typeof header !== 'undefined') {
-        const bearer = header.split(' ');
-        const token = bearer[1];
-        req.token = token;
 
-        next();
-    } else {
-        //If header is undefined return Forbidden (403)
-        res.status(403).json({
-            "code":403,
-            "message": "forbidden"
-        })
+// exports.checkToken = (req, res, next) => {
+//     const header = req.headers['authorization'];
+//     // const token = localStorage.getItem('token');
+//     if(typeof header !== 'undefined') {
+//         const bearer = header.split(' ');
+//         const token = bearer[1];
+//         req.token = token;
+
+//         next();
+//     } else {
+//         //If header is undefined return Forbidden (403)
+//         res.status(403).json({
+//             "code":403,
+//             "message": "forbidden"
+//         })
+//         // res.render('pages/403');
+//     }
+// };
+
+exports.checkLogin = (req,res,next) => {
+    var token = localStorage.getItem('token');
+    try {
+        jwt.verify(token,config.accessTokenSecret,(err) => {
+            if(err) {
+                res.render('pages/403')
+                console.log(err); 
+            } else {
+                next();
+            }
+        });
+    } catch (err) {
+        console.log(err);
+        
     }
-};  
-// // Logout 
-// exports.logout = (req,res) => {
-//     accessToken = null;
-//     console.log(accessToken);
-// }
+}
+
