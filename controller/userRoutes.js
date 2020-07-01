@@ -66,7 +66,7 @@ module.exports = function(app) {
     };
     // getOneUserDetails(url_get_one);
     
-    app.get('/editUser/:id', users.checkLogin ,async function(req,res) {
+    app.get('/users/editUser/:id', users.checkLogin ,async function(req,res) {
         var id = req.params.id;
         const result = await getOneUserDetails(url_get_one+id)
         console.log(result);
@@ -74,17 +74,27 @@ module.exports = function(app) {
         res.render('pages/editUser',{ data: result });
     })
 
+    app.get('/users/viewUser/:id', users.checkLogin ,async function(req,res) {
+        var id = req.params.id;
+        const result = await getOneUserDetails(url_get_one+id)
+        console.log(result);
+            
+        res.render('pages/viewUser',{ data: result });
+    })
+
     app.get('/',function(req,res){
         res.render('pages/login',{login: users.login});
     });
       
-
-    app.get('/addUser', function(req,res) {
+    app.get('/users/addUser', function(req,res) {
         res.render('pages/addUser');
     });
 
     app.get('/403', function(req,res) {
         res.render('pages/403');
+    });
+    app.get('/404', function(req,res) {
+        res.render('pages/404');
     });
     
     app.get('/dashboard',users.checkLogin, function(req,res)  {
@@ -99,24 +109,6 @@ module.exports = function(app) {
     //     res.render('pages/profile');
     // });
 
-    // app.get('/icons',(req, res) => {
-    //     var localToken = localStorage.getItem('token');
-    //     console.log(localToken);
-        
-    //     jwt.verify(localToken, config.accessTokenSecret, (err, authorizedData) => {
-    //         if(err){
-    //             //If error send Forbidden (403)
-    //             console.log(err);            
-    //             // res.status(403).send({
-    //             //     code: 403,
-    //             //     "message": "invalid jwt given!"
-    //             // });
-    //             res.render('pages/403')
-    //         } else {
-    //             res.render('pages/icons');
-    //         }
-    //     });
-    // });
     app.get('/icons',users.checkLogin,(req,res) => {
         res.render('pages/icons');
     });
@@ -128,7 +120,9 @@ module.exports = function(app) {
     app.get('/tables' , function(req, res) {
         res.render('pages/tables');
     });  
-        
+    app.get('*', function(req, res){
+        res.render('pages/404');
+    })
     // app.use((req, res) => {
     //     res.status(404).render('pages/404');
     //   });

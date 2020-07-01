@@ -161,7 +161,7 @@ exports.login = (req, res) => {
         const accessToken = jwt.sign(
             { username: req.body.email },
             config.accessTokenSecret,
-            { expiresIn: '1h' },
+            { expiresIn: '15m' },
         );
         localStorage.setItem('token',accessToken);
         // console.log(localStorage.getItem('token'));
@@ -187,7 +187,7 @@ exports.login = (req, res) => {
             "code":401,
             "message":"Username and password are incorrect!!"
         });
-        res.end();
+        // res.end();
     }
 
 };
@@ -217,14 +217,13 @@ exports.checkLogin = (req,res,next) => {
         jwt.verify(token,config.accessTokenSecret,(err) => {
             if(err) {
                 res.render('pages/403')
-                console.log(err); 
+                // console.log(err); 
             } else {
                 next();
             }
         });
     } catch (err) {
-        console.log(err);
-        
-    }
+        console.log(err);   
+        }
 }
 
