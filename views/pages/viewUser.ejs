@@ -1,0 +1,140 @@
+<!-- <head>
+    <script type = "text/javascript" src = "http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+    <script type="text/javascript"> 
+        $(document).ready( function() {
+            $('#editUserForm').on('submit',(function(e)
+            {                
+                e.preventDefault();
+                var id = "<%= data.id %>";
+                var user_gender = "<%= data.gender %>"
+                console.log(id);
+                var data = {
+                        "fname": $("input[name='fname']").val(),
+                        "lname": $("input[name='lname']").val(),
+                        "gender": $("input[name='gender']:checked").val(),
+                        "email": $("input[name='email']").val(),
+                        "birthdate": $("input[name='dob']").val(),
+                    }
+                var JWTToken = localStorage.getItem('token');
+                console.log(data);
+                document.getElementById('formdata').innerHTML= `${data}`
+                $.ajax({
+                    url: '/api/users/'+id,
+                    type:'PUT',
+                    data: JSON.stringify(data),
+                    contentType: 'application/json; charset=utf-8',
+                    // beforeSend: function (xhr) {
+                    //     /* Set the Authorization header here*/
+                    //     xhr.setRequestHeader("Authorization", "Bearer " + JWTToken);
+                    // },
+                    success: function(response){
+                        console.log(response);
+                        window.location.href = '/users';
+                    },
+                    // error: function(err){
+                    //     // console.log(err.responseJSON.code);
+                    //     if (err.responseJSON.code == 403) {
+                    //         window.location.href = '/403';
+                    //     }
+                    // }
+                });
+            }))
+        });
+    </script>        
+</head> -->
+<body>
+    <!-- Sidenav -->
+    <%- include ('../partials/sidebar') %>
+    <!-- Main content -->
+    <div class="main-content">
+      <!-- Top navbar -->
+      <%- include ('../partials/navbar') %>
+      <!-- Header -->
+      <%- include ('../partials/header') %>
+      <!-- Page content -->
+      <div class="container-fluid mt--7">
+            <!-- Table -->
+            <!-- Dark table -->
+            <div class="row mt-5">
+            <div class="col mt-7">
+                <div class="card bg-default shadow">
+                    <div class="card-header bg-transparent border-0">
+                        <h3 class="text-white mb-0" ><a href="/users">Users</a> / Views User Detail</h3>
+                    </div>   
+                </div>
+                <br>
+                <div id="formdata"></div>
+                     
+                <div class="card-body px-lg-5 py-lg-5">
+                    <form role="form" id="viewUserForm">
+                        
+                        <div class="form-group">
+                            <label for="Id"><b>Id:</b></label>
+                            <span class="mb-0 text-sm"><%= data.id %></span>
+                            <!-- <input type="text" placeholder="Enter Your FirstName" name="fname" id="fname" value="<%= data['firstName'] %>" required>     -->
+                        </div>
+                        <div class="form-group">
+                            <label for="firstname"><b>FirstName:</b></label>
+                            <span class="mb-0 text-sm"><%= data.firstName %></span>
+                            <!-- <input type="text" placeholder="Enter Your FirstName" name="fname" id="fname" value="<%= data['firstName'] %>" required>     -->
+                        </div>
+                        <div class="form-group">
+                            <label for="lastname"><b>LastName:</b></label>
+                            <span class="mb-0 text-sm"><%= data.lastName %></span>
+                            <!-- <input type="text" placeholder="Enter Your LastName" name="lname" id="lname" value="<%= data['lastName'] %>" required>     -->
+                        </div>
+                        <div class="form-group">
+                            <label for="email"><b>Email:</b></label>
+                            <span class="mb-0 text-sm"><%= data.email %></span>
+                            <!-- <input type="email" placeholder="Enter Your Email" name="email" id="email" value="<%= data['email'] %>" required><br> -->
+                        </div>
+                        <div class="form-group" id="gender">
+                            <label for="gender"><b>Gender:</b></label>
+                            <span class="mb-0 text-sm"><%= data.gender %></span>
+                            <!-- <input type="radio" name="gender" value="male" id="male"> Male<br>
+                            <input type="radio" name="gender" value="female" id="female"> Female<br>
+                            <input type="radio" name="gender" value="other" id="other"> Other<br><br> -->
+                        </div>
+                        <div class="form-group">
+                            <label for="birthday"><b>Birthdate:</b></label>
+                            <span class="mb-0 text-sm"><%= data.birthdate %></span>
+                            <!-- <input type="date" id="birthdate" name="dob" placeholder="yyyy-mm-dd" value="<%= data['birthdate'] %>" min="1980-01-01" max="2000-01-01" required>     -->
+                        </div>
+                        <div class="form-group">
+                            <label for="created"><b>createdAt:</b></label>
+                            <span class="mb-0 text-sm"><%= data.createdAt %></span>
+                            <!-- <input type="date" id="birthdate" name="dob" placeholder="yyyy-mm-dd" value="<%= data['birthdate'] %>" min="1980-01-01" max="2000-01-01" required>     -->
+                        </div>
+                        <div class="form-group">
+                            <label for="updated"><b>updatedAt:</b></label>
+                            <span class="mb-0 text-sm"><%= data.updatedAt %></span>
+                            <!-- <input type="date" id="birthdate" name="dob" placeholder="yyyy-mm-dd" value="<%= data['birthdate'] %>" min="1980-01-01" max="2000-01-01" required>     -->
+                        </div>
+                        <div class="form-group">
+
+                            <ul class="nav nav-pills justify-content-center">
+                                <li class="nav-item mr-2 mr-md-4" >
+                                    <a class="nav-link py-2 px-3 active" href="/users/editUser/<%= data.id %>">
+                                        <span class="d-none d-md-block">Edit</span>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a class="nav-link py-2 px-3 active" href="/users">
+                                        <span class="d-none d-md-block">back</span>
+                                    </a>
+                                </li>
+                            </ul>            
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <!-- Footer -->
+        <%- include ('../partials/footer') %>
+      </div>
+    </div>
+  
+    <!-- Include scripts -->
+    <%- include ('../partials/scripts') %>
+  </body>
+  

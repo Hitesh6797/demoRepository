@@ -51,7 +51,7 @@
 
                 <ul class="nav nav-pills justify-content-end">
                     <li class="nav-item mr-2 mr-md-4" >
-                      <a href="/addUser" class="nav-link py-2 px-3 active">
+                      <a href="/users/addUser" class="nav-link py-2 px-3 active">
                         <span class="d-none d-md-block" >+ Add User</span>
                         <!-- <span class="d-md-none">M</span> -->
                       </a>
@@ -63,8 +63,8 @@
                     <!-- <div class="media-body ml-2 d-none d-lg-block"><a href="">add user</a></div> -->
                 </div>
                 <div class="table-responsive">
-                    <table class="table align-items-center table-dark table-flush">
-                    <thead class="thead-dark">
+                    <table class="table align-items-center table-light table-flush">
+                    <thead class="thead-light">
                         <tr>
                         <th scope="col">Id</th>
                         <th scope="col">FirstName</th>
@@ -81,28 +81,32 @@
                         <td scope="row">
                             <div class="media align-items-center">
                             <div class="media-body">
-                                <span class="mb-0 text-sm"><%= users.id %></span>
+                                <a href="/users/viewUser/<%= users.id %>">
+                                    <span class="mb-0 text-sm"><%= users.id %></span>
+                                </a>
                             </div>
                             </div>
                         </td>
-                        <td scope="row">
+                        <th scope="row">
                             <div class="media align-items-center">
                             <div class="media-body">
                                 <span class="mb-0 text-sm"><%= users.firstName %></span>
                             </div>
                             </div>
-                        </td>
-                        <td scope="row">
+                        </th>
+                        <th scope="row">
                             <div class="media align-items-center">
                             <div class="media-body">
                                 <span class="mb-0 text-sm"><%= users.lastName %></span>
                             </div>
                             </div>
-                        </td>
+                        </th>
                         <td scope="row">
                             <div class="media align-items-center">
                             <div class="media-body">
+                            <a href="/users/viewUser/<%= users.id %>">
                                 <span class="mb-0 text-sm"><%= users.email %></span>
+                            </a>
                             </div>
                             </div>
                         </td>
@@ -122,13 +126,13 @@
                         </td>
                         <td class="text-right">
                             <div class="dropdown">
-                            <a class="btn btn-sm btn-icon-only text-light" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <a class="btn btn-sm btn-icon-only text-dark" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                 <i class="fas fa-ellipsis-v"></i>
                             </a>
                             <div class="dropdown-menu dropdown-menu-right dropdown-menu-arrow">
-                                <a class="dropdown-item edit" href="/editUser/<%= users.id %>">Edit</a>
+                                <a class="dropdown-item edit" href="/users/editUser/<%= users.id %>">Edit</a>
                                 <a class="dropdown-item delete" href="" user-id="<%= users.id %>">Delete</a>
-                                <!-- <a class="dropdown-item" href="#">Info</a>  -->
+                                <a class="dropdown-item" href="/users/viewUser/<%= users.id %>">Info</a> 
                             </div>
                             </div>
                         </td>

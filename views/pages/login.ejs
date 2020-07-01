@@ -9,7 +9,7 @@ $('#adminLogin').on('submit', function(e) {
         "password": $('#adminLoginPassword').val(),
       }
     $.ajax({
-        url: '/admin/login',
+        url: 'admin/login',
         type: 'POST',
         contentType: 'application/json; charset=utf-8',     
         data: JSON.stringify(data),
