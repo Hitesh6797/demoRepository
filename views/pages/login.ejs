@@ -8,16 +8,17 @@ $('#adminLogin').on('submit', function(e) {
         "email": $('#adminLoginEmail').val(),
         "password": $('#adminLoginPassword').val(),
       }
+    var result = JSON.stringify(data)
     $.ajax({
         url: 'admin/login',
         type: 'POST',
         contentType: 'application/json; charset=utf-8',     
-        data: JSON.stringify(data),
+        data: result,
         success: function(data) {
             // localStorage.setItem('token',data['x-access-token']);
             window.location.href = '/dashboard';
          },
-         error: function(xhr,status){
+         error: function(xhr){
             console.log(xhr.responseJSON);
             document.getElementById("error").innerHTML = `<strong style="color:red;"> ${xhr.responseJSON.message} </strong>`;
           }
@@ -70,7 +71,7 @@ $('#adminLogin').on('submit', function(e) {
                     <div class="input-group-prepend">
                       <span class="input-group-text"><i class="ni ni-email-83"></i></span>
                     </div>
-                    <input class="form-control" placeholder="Email" type="email" name="username" id="adminLoginEmail">
+                    <input class="form-control" placeholder="Email" type="email" name="username" id="adminLoginEmail" required>
                   </div>
                 </div>
 
@@ -79,12 +80,12 @@ $('#adminLogin').on('submit', function(e) {
                     <div class="input-group-prepend">
                       <span class="input-group-text"><i class="ni ni-lock-circle-open"></i></span>
                     </div>
-                    <input class="form-control" placeholder="Password" type="password" name="password" id="adminLoginPassword">
+                    <input class="form-control" placeholder="Password" type="password" name="password" id="adminLoginPassword" required>
                   </div>
                 </div>
                 
                 <div class="text-center">
-                  <input type="submit" class="btn btn-primary my-4" value="Sing in">
+                  <input type="submit" class="btn btn-primary my-4" value="Sign in">
                   <!-- <button class="btn btn-primary my-4">Sign in</button> -->
                 </div>
               
