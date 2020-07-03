@@ -155,41 +155,43 @@ exports.delete = (req,res) => {
   
 // Login using admin and generate JWT token
 exports.login = (req, res) => {
-    
-    if (req.body.email == "admin@argon.com" && req.body.password == "secret") {
-        // Generate an access token
-        const accessToken = jwt.sign(
-            { username: req.body.email },
-            config.accessTokenSecret,
-            { expiresIn: '15m' },
-        );
-        localStorage.setItem('token',accessToken);
-        // console.log(localStorage.getItem('token'));
-        res.status(200).send({
-            "code":200,
-            "x-access-token": accessToken,
-          });
-    } else if(req.body.email == "admin@argon.com" && req.body.password != "secret"){
-        // return res.redirect(config.url);
-        res.status(401).send({
-            code:401,
-            message:"Invalid password!!"
-        });
-        res.end();
-    } else if(req.body.email != "admin@argon.com" && req.body.password == "secret"){
-        res.status(401).send({
-            code:401,
-            message:"Invalid Username!!"
-        });
-        res.end();
-    } else {
-        res.status(401).send({
-            "code":401,
-            "message":"Username and password are incorrect!!"
-        });
-        // res.end();
+    try {
+        if (req.body.email == "admin@argon.com" && req.body.password == "secret") {
+            // Generate an access token
+            const accessToken = jwt.sign(
+                { username: req.body.email },
+                config.accessTokenSecret,
+                { expiresIn: '15m' },
+            );
+            localStorage.setItem('token',accessToken);
+            // console.log(localStorage.getItem('token'));
+            res.status(200).send({
+                "code":200,
+                "x-access-token": accessToken,
+              });
+        } else if(req.body.email == "admin@argon.com" && req.body.password != "secret"){
+            // return res.redirect(config.url);
+            res.send({
+                code:401,
+                message:"Invalid password!!"
+            });
+            res.end();
+        } else if(req.body.email != "admin@argon.com" && req.body.password == "secret"){
+            res.send({
+                code:401,
+                message:"Invalid Username!!"
+            });
+            res.end();
+        } else {
+            res.send({
+                "code":401,
+                "message":"Username and password are incorrect!!"
+            }); 
+        }
+    } catch (err) {
+        res.status(500).send({error:err})        
     }
-
+        // res.end();
 };
 
 // exports.checkToken = (req, res, next) => {

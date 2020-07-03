@@ -20,10 +20,10 @@ module.exports = function(app) {
     app.post('/api/users',users.checkLogin, users.create);
  
     // Retrieve all Customer
-    app.get('/api/users', users.findAll);
+    app.get('/api/users',users.checkLogin, users.findAll);
  
     // Retrieve a single Customer by Id
-    app.get('/api/users/:id',users.findByPk);
+    app.get('/api/users/:id',users.checkLogin, users.findByPk);
  
     // Update a Customer with Id
     app.put('/api/users/:id',users.checkLogin, users.update);
@@ -34,6 +34,10 @@ module.exports = function(app) {
     // // login with jwt token
     app.post('/admin/login',users.login);
     
+    app.get('/admin/logout',users.checkLogin,(req,res) => {
+        localStorage.removeItem('token');
+        res.send("logout success!!")
+    })
     const url_get_all = config.url+'api/users';
     const getAllUserDetails = async url_get_all => {
     try {
@@ -83,10 +87,10 @@ module.exports = function(app) {
     })
 
     app.get('/',function(req,res){
-        res.render('pages/login',{login: users.login});
+        res.render('pages/login');
     });
       
-    app.get('/users/addUser', function(req,res) {
+    app.get('/users/addUser',users.checkLogin, function(req,res) {
         res.render('pages/addUser');
     });
 
@@ -101,9 +105,9 @@ module.exports = function(app) {
         res.render('pages/dashboard')
     });
 
-    app.get('/register',function(req,res)  {
-        res.render('pages/register')
-    });
+    // app.get('/register',function(req,res)  {
+    //     res.render('pages/register')
+    // });
 
     // app.get('/profile',function(req,res){
     //     res.render('pages/profile');
@@ -113,11 +117,7 @@ module.exports = function(app) {
         res.render('pages/icons');
     });
 
-    app.get('/logout',(req,res) => {
-        localStorage.removeItem('token');
-        res.send("logout success!!")
-    })
-    app.get('/tables' , function(req, res) {
+    app.get('/tables' ,users.checkLogin, function(req, res) {
         res.render('pages/tables');
     });  
     app.get('*', function(req, res){

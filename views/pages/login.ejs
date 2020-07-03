@@ -15,13 +15,17 @@ $('#adminLogin').on('submit', function(e) {
         contentType: 'application/json; charset=utf-8',     
         data: result,
         success: function(data) {
-            // localStorage.setItem('token',data['x-access-token']);
+          // console.log(data.code);
+          if(data.code == 200) 
             window.location.href = '/dashboard';
-         },
-         error: function(xhr){
-            console.log(xhr.responseJSON);
-            document.getElementById("error").innerHTML = `<strong style="color:red;"> ${xhr.responseJSON.message} </strong>`;
-          }
+          if(data.code == 401)
+            document.getElementById("error").innerHTML = `<strong style="color:red;"> ${data.message} </strong>`;        
+            // localStorage.setItem('token',data['x-access-token']);
+        },
+        //  error: function(xhr){
+        //     console.log(xhr.responseJSON);
+        //     document.getElementById("error").innerHTML = `<strong style="color:red;"> ${xhr.responseJSON.message} </strong>`;
+        //   }
     })
 })
 });
