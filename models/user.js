@@ -15,8 +15,13 @@ module.exports= (sequelize,Sequelize) => {
         },
         email: {
             type: Sequelize.STRING,
-            allowNull: false,        
-        },
+            allowNull: false,
+            unique: true,
+          },
+        // email: {
+        //     type: Sequelize.STRING,
+        //     allowNull: false,        
+        // },
         gender: {
             type: Sequelize.STRING,
             allowNull: false
@@ -25,7 +30,14 @@ module.exports= (sequelize,Sequelize) => {
             type: Sequelize.DATEONLY,
             allowNull:false
         }
-    });
+    },
+    {
+        indexes: [{
+          fields: ['email'],
+          unique: true,
+        }]
+    }
+    );
 return User;    
 }
 
