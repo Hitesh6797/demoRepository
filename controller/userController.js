@@ -19,7 +19,7 @@ exports.create = (req,res) => {
     //             code: 403,
     //             "message": "invalid jwt given!"
     //         });
-    //     } else {
+    //     } else { 
             User.create({
                 firstName: req.body.fname,
                 lastName: req.body.lname,
@@ -35,7 +35,11 @@ exports.create = (req,res) => {
                 });
             })
             .catch(err => {
-                console.log(err);
+                res.send(err)
+                // console.log(err);
+                
+                // console.log(UniqueConstraintError.errors[0].message);
+                // res.json({error:err});
             });    
     //     }
     // });
