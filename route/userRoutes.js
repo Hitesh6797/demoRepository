@@ -1,63 +1,85 @@
 const fetch = require('node-fetch');
-const config = require('../env/config');
+require('dotenv').config();
 const { users } = require('../util/database');
 const jwt = require("jsonwebtoken");
 const user = require('../models/user');
+var multer = require('multer');
+
+var storage = multer.diskStorage({
+    destination: function(req,file,cb){
+        cb(null, './public/img/theme/');
+    },
+    filename: function(req,file,cb){
+        cb(null, file.originalname);
+    }
+});
+
+const fileFilter = (req,file,cb) => {
+    if(file.mimetype === 'image/jpeg' ||file.mimetype === 'image/jpg' || file.mimetype === 'image/png') {
+        cb(null,true);
+    } else {
+        cb(null,false);
+    }
+};
+
+var upload = multer({
+    storage: storage,
+    limits: {
+        fileSize: 1024*1024*5
+    },
+    fileFilter:fileFilter
+});
 
 if (typeof localStorage === "undefined" || localStorage === null) {
     var LocalStorage = require('node-localstorage').LocalStorage;
     var localStorage = new LocalStorage('./scratch');
 }
-    // console.log(localStorage);
 
-    
 module.exports = function(app) {
     
     const users = require('../controller/userController');
-
+    const adminLogin = require('../controller/login');
+    
     // Create a new Customer
-
-    app.post('/api/users',users.checkLogin, users.create);
+    app.post('/api/users',adminLogin.checkLogin, upload.single('profile_photo'), users.create);
  
     // Retrieve all Customer
-    app.get('/api/users',users.checkLogin, users.findAll);
+    app.get('/api/users',adminLogin.checkLogin, users.findAll);
  
     // Retrieve a single Customer by Id
-    app.get('/api/users/:id',users.checkLogin, users.findByPk);
+    app.get('/api/users/:id',adminLogin.checkLogin, users.findByPk);
  
     // Update a Customer with Id
-    app.put('/api/users/:id',users.checkLogin, users.update);
+    app.put('/api/users/:id',adminLogin.checkLogin, users.update);
  
     // Delete a Customer with Id
-    app.delete('/api/users/:id',users.checkLogin, users.delete);
+    app.delete('/api/users/:id',adminLogin.checkLogin, users.delete);
 
     // // login with jwt token
-    app.post('/admin/login',users.login);
+    app.post('/admin/login',adminLogin.login);
     
-    app.get('/admin/logout',users.checkLogin,(req,res) => {
+    app.get('/admin/logout',adminLogin.checkLogin,(req,res) => {
         localStorage.removeItem('token');
         res.send("logout success!!")
     })
-    const url_get_all = config.url+'api/users';
+    const url_get_all = process.env.url +'api/users';
     const getAllUserDetails = async url_get_all => {
     try {
         const response = await fetch(url_get_all);
         const json = await response.json();
         return json
-        // console.log(json);
     } catch (error) {
         console.log(error);
     }   
     };
-    // getAllUserDetails(url_get_all);
 
-    app.get('/users', users.checkLogin, async function(req,res) {            
+    app.get('/users', adminLogin.checkLogin, async function(req,res) {            
         const result =  await getAllUserDetails(url_get_all)
             console.log(result);
         res.render('pages/userDetails',{ user:result.data });
     });
     
-    const url_get_one = config.url+'api/users/';
+    const url_get_one = process.env.url+'api/users/';
     const getOneUserDetails = async url_get_one => {
     try {
         const response = await fetch(url_get_one);
@@ -68,9 +90,8 @@ module.exports = function(app) {
         console.log(error);
     }   
     };
-    // getOneUserDetails(url_get_one);
     
-    app.get('/users/editUser/:id', users.checkLogin ,async function(req,res) {
+    app.get('/users/editUser/:id', adminLogin.checkLogin ,async function(req,res) {
         var id = req.params.id;
         const result = await getOneUserDetails(url_get_one+id)
         console.log(result);
@@ -78,7 +99,7 @@ module.exports = function(app) {
         res.render('pages/editUser',{ data: result });
     })
 
-    app.get('/users/viewUser/:id', users.checkLogin ,async function(req,res) {
+    app.get('/users/viewUser/:id', adminLogin.checkLogin ,async function(req,res) {
         var id = req.params.id;
         const result = await getOneUserDetails(url_get_one+id)
         console.log(result);
@@ -90,7 +111,7 @@ module.exports = function(app) {
         res.render('pages/login');
     });
       
-    app.get('/users/addUser',users.checkLogin, function(req,res) {
+    app.get('/users/addUser',adminLogin.checkLogin, function(req,res) {
         res.render('pages/addUser');
     });
 
@@ -101,30 +122,18 @@ module.exports = function(app) {
         res.render('pages/404');
     });
     
-    app.get('/dashboard',users.checkLogin, function(req,res)  {
+    app.get('/dashboard',adminLogin.checkLogin, function(req,res)  {
         res.render('pages/dashboard')
     });
 
-    // app.get('/register',function(req,res)  {
-    //     res.render('pages/register')
-    // });
-
-    // app.get('/profile',function(req,res){
-    //     res.render('pages/profile');
-    // });
-
-    app.get('/icons',users.checkLogin,(req,res) => {
+    app.get('/icons',adminLogin.checkLogin,(req,res) => {
         res.render('pages/icons');
     });
 
-    app.get('/tables' ,users.checkLogin, function(req, res) {
+    app.get('/tables' ,adminLogin.checkLogin, function(req, res) {
         res.render('pages/tables');
     });  
     app.get('*', function(req, res){
         res.render('pages/404');
     })
-    // app.use((req, res) => {
-    //     res.status(404).render('pages/404');
-    //   });
-
 }

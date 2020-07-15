@@ -2,7 +2,7 @@ const Sequelize = require("sequelize");
 
 const sequelize = require("../util/database");
 module.exports= (sequelize,Sequelize) => {
-    const User = sequelize.define('newUser', {
+    const User = sequelize.define('userdetails', {
         // // attributes
        
         firstName: {
@@ -29,6 +29,10 @@ module.exports= (sequelize,Sequelize) => {
         birthdate: {
             type: Sequelize.DATEONLY,
             allowNull:false
+        },
+        profile: {
+            type: Sequelize.STRING,
+            allowNull: false,
         }
     },
     {

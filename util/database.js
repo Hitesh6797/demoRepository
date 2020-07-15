@@ -1,8 +1,9 @@
 const Sequelize = require('sequelize');
-const config = require('../env/config');
-const sequelize = new Sequelize(config.DB,config.root,config.password,{
-    dialect: config.DATABASE,
-    host: config.HOST,
+require('dotenv').config();
+
+const sequelize = new Sequelize(process.env.MY_DB,process.env.ROOT,process.env.PASSWORD,{
+    dialect: process.env.DATABASE,
+    host: process.env.HOST,
     operatorsAliases: false,
     pool: {
         max: 5,

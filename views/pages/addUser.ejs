@@ -2,30 +2,40 @@
     <script type = "text/javascript" src = "http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
     <script type="text/javascript"> 
         $(document).ready( function() {
-            $('#addUserForm').on('submit',(function(e)
-            {
+            $('#addUserForm').on('submit',(function(e) {
                 e.preventDefault();
+                console.log(this);
+                var fd = new FormData(this);
+                var files = $('#file')[0].files[0];
+                // console.log(JSON.stringify(fd));
+                // var fdata = $('#addUserForm').serializeArray()
+                fd.append('file',files);
+                
+                console.log(fd);
                 var data = {
                         "fname": $("input[name='fname']").val(),
                         "lname": $("input[name='lname']").val(),
                         "gender": $("input[name='gender']:checked").val(),
                         "email": $("input[name='email']").val(),
                         "birthdate": $("input[name='dob']").val(),
+                        "profile": files
                     }
-                var JWTToken = localStorage.getItem('token');
-                // console.log(data);
-                // document.getElementById('formdata').innerHTML= `${data}`
+                // var JWTToken = localStorage.getItem('token');
+                console.log(data);
                 $.ajax({
                     url: '/api/users',
                     type:'POST',
                     data: JSON.stringify(data),
-                    contentType: 'application/json; charset=utf-8',
+                    cache: false,
+                    contentType: false,
+                    processData: false,
+                    // contentType: 'application/json; charset=utf-8',
                     // beforeSend: function (xhr) {
                     //     /* Set the Authorization header here*/
                     //     xhr.setRequestHeader("Authorization", "Bearer " + JWTToken);
                     // },
                     success: function(response){
-                        // console.log(response);
+                        console.log(response);
                         if (!response.errors)
                             window.location.href = '/users';
                         else
@@ -35,6 +45,7 @@
             }))
         });
     </script>        
+
 </head>
 <body>
     <!-- Sidenav -->
@@ -58,7 +69,7 @@
                 </div>
                 <br>
                 <div class="card-body px-lg-5 py-lg-5">
-                    <form role="form" id="addUserForm">
+                    <form id="addUserForm" enctype="multipart/form-data">
                         
                         <div class="form-group">
                             <label for="firstname"><b>FirstName:</b></label>
@@ -85,7 +96,12 @@
                             <input type="date" id="birthdate" name="dob" placeholder="yyyy-mm-dd" min="1980-01-01" max="2000-01-01" required>    
                         </div>
                         <div class="form-group">
-                            <input type="submit" class="btn btn-primary my-4" value="Add User" >
+                            <!-- <label for="birthday"><b>upload Profile :</b></label> -->
+                            <input type="file" name="profile_photo" id="file" required>    
+                        </div>
+                        
+                        <div class="form-group">
+                            <input type="submit" class="btn btn-primary my-4" value="Add User" id="submit_form">
                             <div id="formdata"></div>
                             
                             <!-- <button class="btn btn-primary my-4">Add User</button> -->
