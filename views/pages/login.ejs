@@ -1,35 +1,49 @@
-<script type = "text/javascript" src = "http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
-<script type="text/javascript">
-$(document).ready(function () {
+  <script type = "text/javascript" src = "http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+  <script type="text/javascript">
+    $(document).ready(function () {
+  
+    $('#adminLogin').on('submit', function(e) {
+        e.preventDefault();
+  
+        var data = {
+            "email": $('#adminLoginEmail').val(),
+            "password": $('#adminLoginPassword').val(),
+          }
+        var result = JSON.stringify(data)
+        $.ajax({
+            url: 'admin/login',
+            type: 'POST',
+            contentType: 'application/json; charset=utf-8',     
+            data: result,
+            success: function(data) {
+              console.log(data);
+              window.location =  '/dashboard';
+            },
+            error: function(err){
+              console.log(err);
+              let locals = err.responseJSON.errorMessage;
 
-$('#adminLogin').on('submit', function(e) {
-    e.preventDefault();
-    var data = {
-        "email": $('#adminLoginEmail').val(),
-        "password": $('#adminLoginPassword').val(),
-      }
-    var result = JSON.stringify(data)
-    $.ajax({
-        url: 'admin/login',
-        type: 'POST',
-        contentType: 'application/json; charset=utf-8',     
-        data: result,
-        success: function(data) {
-          // console.log(data.code);
-          if(data.code == 200) 
-            window.location.href = '/dashboard';
-          if(data.code == 401)
-            document.getElementById("error").innerHTML = `<strong style="color:red;"> ${data.message} </strong>`;        
-            // localStorage.setItem('token',data['x-access-token']);
-        },
-        //  error: function(xhr){
-        //     console.log(xhr.responseJSON);
-        //     document.getElementById("error").innerHTML = `<strong style="color:red;"> ${xhr.responseJSON.message} </strong>`;
-        //   }
+              if(err.responseJSON){
+                if(locals.email && locals.password){
+                  let email = err.responseJSON.errorMessage.email.msg
+                  let password = err.responseJSON.errorMessage.password.msg
+                  document.getElementById("emailError").innerHTML = `<strong style="color:red;">${email}</strong> `;        
+                  document.getElementById("passwordError").innerHTML = `<strong style="color:red;">${password}</strong> `;        
+                }
+                else if(locals.email) {
+                  let email = err.responseJSON.errorMessage.email.msg
+                  document.getElementById("emailError").innerHTML = `<strong style="color:red;">${email}</strong> `;  
+                }
+                else if(locals.password) {
+                  let password = err.responseJSON.errorMessage.password.msg
+                  document.getElementById("passwordError").innerHTML = `<strong style="color:red;">${password}</strong> `;                 
+                } 
+              }  
+            }
+        })
     })
-})
-});
-</script>
+    });
+  </script>
 
 <body class="bg-default">
   <div class="main-content">
@@ -63,20 +77,18 @@ $('#adminLogin').on('submit', function(e) {
                   You can use <strong>admin@argon.com</strong> and <strong>secret</strong> to login
                 </small>
               </div>
-              
               <div id="error"></div>
-              <br>
-              <!-- <strong class="inavlid-feedback"></strong> -->
-
-              <form role="form" id="adminLogin">
+              <br>          
+              <form role="form" id="adminLogin" >
 
                 <div class="form-group">
                   <div class="input-group input-group-alternative">
                     <div class="input-group-prepend">
                       <span class="input-group-text"><i class="ni ni-email-83"></i></span>
                     </div>
-                    <input class="form-control" placeholder="Email" type="email" name="username" id="adminLoginEmail" required>
+                    <input class="form-control" placeholder="Email" type="email" name="email" id="adminLoginEmail" required>
                   </div>
+                  <div id="emailError"></div>
                 </div>
 
                 <div class="form-group">
@@ -85,12 +97,11 @@ $('#adminLogin').on('submit', function(e) {
                       <span class="input-group-text"><i class="ni ni-lock-circle-open"></i></span>
                     </div>
                     <input class="form-control" placeholder="Password" type="password" name="password" id="adminLoginPassword" required>
+                    </div>
+                    <div id="passwordError"></div>
                   </div>
-                </div>
-                
                 <div class="text-center">
                   <input type="submit" class="btn btn-primary my-4" value="Sign in">
-                  <!-- <button class="btn btn-primary my-4">Sign in</button> -->
                 </div>
               
               </form>
@@ -112,5 +123,5 @@ $('#adminLogin').on('submit', function(e) {
   <%- include ('../partials/auth/footer') %>
 
   <!-- Include scripts -->
-  <%- include ('../partials/scripts') %>
+  <%- include ('../partials/scripts') %>  
 </body>

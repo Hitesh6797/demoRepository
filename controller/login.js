@@ -1,5 +1,6 @@
 const jwt = require("jsonwebtoken");
 require('dotenv').config();
+const { validationResult } = require('express-validator');
 
 if (typeof localStorage === "undefined" || localStorage === null) {
     var LocalStorage = require('node-localstorage').LocalStorage;
@@ -8,7 +9,15 @@ if (typeof localStorage === "undefined" || localStorage === null) {
 
 // Login using admin and generate JWT token
 exports.login = (req, res) => {
+    const errors = validationResult(req);
+    console.log(errors.mapped());
+    if(!errors.isEmpty()) {
+        return res.status(422).json({
+            errorMessage: errors.mapped()
+        });
+    }
     try {
+        console.log(req.body);
         if (req.body.email == "admin@argon.com" && req.body.password == "secret") {
             // Generate an access token
             const accessToken = jwt.sign(
@@ -17,26 +26,41 @@ exports.login = (req, res) => {
                 { expiresIn: '1h' },
             );
             localStorage.setItem('token',accessToken);
-            res.status(200).send({
+            return res.status(200).send({
                 "code":200,
                 "x-access-token": accessToken,
               });
         } else if(req.body.email == "admin@argon.com" && req.body.password != "secret"){
-            res.send({
-                code:401,
-                message:"Invalid password!!"
+            return res.status(401).send({
+                errorMessage:{
+                    password:{
+                        value: req.body.password,
+                        msg: 'Password is incorrect!'
+                    }
+                }
             });
             res.end();
         } else if(req.body.email != "admin@argon.com" && req.body.password == "secret"){
-            res.send({
-                code:401,
-                message:"Invalid Username!!"
+            return res.status(401).send({
+                errorMessage:{
+                    email:{
+                        value: req.body.email,
+                        msg: 'Invalid email address!'
+                    }
+                }
             });
-            res.end();
         } else {
-            res.send({
-                "code":401,
-                "message":"Username and password are incorrect!!"
+            res.status(401).send({
+                errorMessage:{
+                    password:{
+                        value: req.body.password,
+                        msg: 'Invalid password!'
+                    },
+                    email:{
+                        value: req.body.email,
+                        msg: 'Invalid email address!'
+                    }
+                }
             }); 
         }
     } catch (err) {

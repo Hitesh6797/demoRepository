@@ -7,25 +7,13 @@
         $(".delete").on('click',(function(e){
             $target =  $(e.target);
             var id = $target.attr('user-id');
-            // var url = $target.attr('href');
-            var JWTToken = localStorage.getItem('token');
             $.ajax({
                 url: '/api/users/'+id,
                 type: 'DELETE',
                 contentType: 'application/json; charset=utf-8',
-                // beforeSend: function (xhr) {
-                //     /* Set the Authorization header here*/
-                //     xhr.setRequestHeader("Authorization", "Bearer " + JWTToken);
-                // },
                 success: function(response){
                     window.location = '/users';
                 }
-                // error: function(err){
-                //     // console.log(err.responseJSON.code);
-                //     if (err.responseJSON.code == 403) {
-                //         window.location.href = '/403';
-                //     }
-                // }
             });
         }));
     }); 

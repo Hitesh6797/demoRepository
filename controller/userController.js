@@ -1,12 +1,15 @@
 const db = require("../util/database");
 const User = db.users;
-const jwt = require("jsonwebtoken");
+const { validationResult } = require('express-validator');
 
 // POST User details to database
 exports.create = (req,res) => {    
     console.log(req.file,req.body);
-
     var filename = req.file.originalname;
+    const errors = validationResult(req);
+    
+    console.log(errors.mapped());
+    
     User.create({
         firstName: req.body.fname,
         lastName: req.body.lname,

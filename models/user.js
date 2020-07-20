@@ -18,10 +18,6 @@ module.exports= (sequelize,Sequelize) => {
             allowNull: false,
             unique: true,
           },
-        // email: {
-        //     type: Sequelize.STRING,
-        //     allowNull: false,        
-        // },
         gender: {
             type: Sequelize.STRING,
             allowNull: false

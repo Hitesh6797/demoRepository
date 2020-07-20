@@ -1,11 +1,12 @@
 const fetch = require('node-fetch');
 require('dotenv').config();
-const { users } = require('../util/database');
-const jwt = require("jsonwebtoken");
-const user = require('../models/user');
-var multer = require('multer');
+const users = require('../controller/userController');
+const adminLogin = require('../controller/login');
+const { check } = require('express-validator');
+const multer = require('multer');
 
-var storage = multer.diskStorage({
+
+const fileStorage = multer.diskStorage({
     destination: function(req,file,cb){
         cb(null, './public/img/theme/');
     },
@@ -22,8 +23,8 @@ const fileFilter = (req,file,cb) => {
     }
 };
 
-var upload = multer({
-    storage: storage,
+const upload = multer({
+    storage: fileStorage,
     limits: {
         fileSize: 1024*1024*5
     },
@@ -37,12 +38,20 @@ if (typeof localStorage === "undefined" || localStorage === null) {
 
 module.exports = function(app) {
     
-    const users = require('../controller/userController');
-    const adminLogin = require('../controller/login');
+    // Create a new Customer        
     
-    // Create a new Customer
-    app.post('/api/users',adminLogin.checkLogin, upload.single('profile_photo'), users.create);
- 
+    app.post('/api/users', adminLogin.checkLogin, upload.single('file'), [
+        check('fname').not().isEmpty().withMessage('Firstname is required!')
+            .isAlpha().withMessage('Firstname doesnot contain special char and number!')
+            .isLength({min:3,max:12}).withMessage('Firstname length must be between 3 to 12 char long'),
+        check('lname').not().isEmpty().withMessage('Lastname is required!')
+            .isAlpha().withMessage('Lastname doesnot contain special char and number!')
+            .isLength({min:3,max:12}).withMessage('Lastname length must be between 3 to 12 char long'),
+        check('email').not().isEmpty().withMessage('Email is required!')
+            .isEmail().withMessage('Enter a valid Email address!'),
+        check('birthdate','birthdate is require').not().isEmpty()
+        ], users.create);
+            
     // Retrieve all Customer
     app.get('/api/users',adminLogin.checkLogin, users.findAll);
  
@@ -56,7 +65,12 @@ module.exports = function(app) {
     app.delete('/api/users/:id',adminLogin.checkLogin, users.delete);
 
     // // login with jwt token
-    app.post('/admin/login',adminLogin.login);
+    app.post('/admin/login',[
+        check('email').not().isEmpty().withMessage('Email is required!')
+            .isEmail().withMessage('Please Enter valid email!'),
+        check('password').not().isEmpty().withMessage('Password is required!')
+            .isLength({min:6}).withMessage('Password must be 6 character long')
+        ],adminLogin.login);
     
     app.get('/admin/logout',adminLogin.checkLogin,(req,res) => {
         localStorage.removeItem('token');
