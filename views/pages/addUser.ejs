@@ -1,36 +1,6 @@
 <script type = "text/javascript" src = "http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
-    <script type="text/javascript"> 
-        $(document).ready( function() {
-            $('#addUserForm').on('submit',(function(e) {
-                e.preventDefault();
-                
-                var formData = new FormData();
-                var files = $('#file')[0].files[0];
-                
-                formData.append('file',files);
-                formData.append('fname',$("input[name='fname']").val())
-                formData.append('lname',$("input[name='lname']").val())
-                formData.append('gender',$("input[name='gender']:checked").val())
-                formData.append('email',$("input[name='email']").val())
-                formData.append('birthdate',$("input[name='dob']").val())
-                
-                console.log(formData);
-                $.ajax({
-                    url: '/api/users',
-                    type:'POST',
-                    data: formData,
-                    contentType: false,
-                    processData: false,
-                    success: function(response){
-                        console.log(response);
-                        // if (!response.errors)
-                        //     window.location.href = '/users';
-                        // else
-                        //     document.getElementById("error").innerHTML = `<strong style="color:red;">email is already exists!</strong> `;        
-                    }
-                });
-            }))
-        });
+<script type="text/javascript" src="http://192.168.42.80:3000/js/adduserAjax.js"> 
+
 </script>        
 <body>
     <!-- Sidenav -->
@@ -54,21 +24,22 @@
                 </div>
                 <br>
                 <div class="card-body px-lg-5 py-lg-5">
-                    <form id="addUserForm" enctype="multipart/form-data">
+                    <form id="addUserForm" enctype="multipart/form-data" novalidate>
                         
                         <div class="form-group">
                             <label for="firstname"><b>FirstName:</b></label>
                             <input type="text" placeholder="Enter Your FirstName" name="fname" id="fname" minlength="3" maxlength="12" pattern="^[A-Za-z]+$" required>    
+                            <div id="fnameError"></div>
                         </div>
                         <div class="form-group">
                             <label for="lastname"><b>LastName:</b></label>
                             <input type="text" placeholder="Enter Your LastName" name="lname" id="lname" minlength="3" maxlength="12" pattern="^[A-Za-z]+$" required>    
+                            <div id="lnameError"></div>
                         </div>
                         <div class="form-group">
                             <label for="email"><b>Email:</b></label>
                             <input type="email" placeholder="Enter Your Email" name="email" id="email" required><br>
-                            <div id="error"></div>
-
+                            <div id="emailError"></div>
                         </div>
                         <div class="form-group">
                             <label for="gender"><b>Gender:</b></label><br>
@@ -79,17 +50,16 @@
                         <div class="form-group">
                             <label for="birthday"><b>Birthday:</b></label>
                             <input type="date" id="birthdate" name="dob" placeholder="yyyy-mm-dd" min="1980-01-01" max="2000-01-01" required>    
+                            <div id="birthdateError"></div>
                         </div>
                         <div class="form-group">
-                            <!-- <label for="birthday"><b>upload Profile :</b></label> -->
-                            <input type="file" name="profile_photo" id="file" required>    
+                            <input type="file" name="profile_photo" id="file" required>
+                            <div id="profileError"></div>
                         </div>
                 
                         <div class="form-group">
                             <input type="submit" class="btn btn-primary my-4" value="Add User" id="submit_form">
                             <div id="formdata"></div>
-                            
-                            <!-- <button class="btn btn-primary my-4">Add User</button> -->
                         </div>
                     </form>
                 </div>

@@ -1,6 +1,5 @@
-<head>
-    <script type = "text/javascript" src = "http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
-    <script type="text/javascript"> 
+<script type = "text/javascript" src = "http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+<script type="text/javascript"> 
         $(document).ready( function() {
             
             var user_gender = "<%= data.gender %>"
@@ -11,11 +10,13 @@
             else 
                 $('#editUserForm').find(':radio[name=gender][value="other"]').prop('checked', true);
             
-            $('#editUserForm').on('submit',(function(e)
-            {
+            $('#editUserForm').on('submit',(function(e) {
                 e.preventDefault();
                 var id = "<%= data.id %>";
                 console.log(id);
+                var formData = new FormData();
+                var fname = document.getElementsByTagName("form");  
+                console.log(fname);
                 var data = {
                         "fname": $("input[name='fname']").val(),
                         "lname": $("input[name='lname']").val(),
@@ -24,21 +25,56 @@
                         "birthdate": $("input[name='dob']").val(),
                     }
                 console.log(data);
-                document.getElementById('formdata').innerHTML= `${data}`
                 $.ajax({
                     url: '/api/users/'+id,
                     type:'PUT',
                     data: JSON.stringify(data),
                     contentType: 'application/json; charset=utf-8',
+                    processData: false,
                     success: function(response){
                         console.log(response);
                         window.location.href = '/users';
+                    },
+                    error: function(err) {
+                        let locals = err.responseJSON.errorMessage;
+
+                        console.log(err);
+                        if(err.responseJSON){
+                            
+                            if(locals.fname) {
+                                let FirstName = locals.fname.msg
+                                document.getElementById("fnameError").innerHTML = `<strong style="color:red;">${FirstName}</strong> `;  
+                            } else {
+                                document.getElementById("fnameError").innerHTML = ``;
+                            }
+                            
+                            if(locals.lname) {
+                                let LastName = locals.lname.msg
+                                document.getElementById("lnameError").innerHTML = `<strong style="color:red;">${LastName}</strong> `;  
+                            } else {
+                                document.getElementById("lnameError").innerHTML = ``;
+                            }
+
+                            if(locals.email) {
+                                let email = locals.email.msg
+                                document.getElementById("emailError").innerHTML = `<strong style="color:red;">${email}</strong> `;                 
+                            } else {
+                                document.getElementById("emailError").innerHTML = ``;                 
+                            }
+
+                            if(locals.birthdate) {
+                                let birthdate = locals.birthdate.msg;
+                                document.getElementById("birthdateError").innerHTML = `<strong style="color:red;">${birthdate}</strong> `;  
+                            } else {
+                                document.getElementById("birthdateError").innerHTML = ``; 
+                            }
+                            
+                        }
                     }
                 });
             }))
         });
-    </script>        
-</head>
+</script>
 <body>
     <!-- Sidenav -->
     <%- include ('../partials/sidebar') %>
@@ -59,23 +95,24 @@
                         <h3 class="text-white mb-0" ><a href="/users">Users</a> / Edit User</h3>
                     </div>   
                 </div>
-                <br>
-                <div id="formdata"></div>
-                     
+                <br>                     
                 <div class="card-body px-lg-5 py-lg-5">
-                    <form role="form" id="editUserForm">
+                    <form id="editUserForm" novalidate>
                         
                         <div class="form-group">
                             <label for="firstname"><b>FirstName:</b></label>
                             <input type="text" placeholder="Enter Your FirstName" name="fname" id="fname" value="<%= data['firstName'] %>" required>    
+                            <div id="fnameError"></div>
                         </div>
                         <div class="form-group">
                             <label for="lastname"><b>LastName:</b></label>
                             <input type="text" placeholder="Enter Your LastName" name="lname" id="lname" value="<%= data['lastName'] %>" required>    
+                            <div id="lnameError"></div>
                         </div>
                         <div class="form-group">
                             <label for="email"><b>Email:</b></label>
                             <input type="email" placeholder="Enter Your Email" name="email" id="email" value="<%= data['email'] %>" required><br>
+                            <div id="emailError"></div>
                         </div>
                         <div class="form-group" id="gender">
                             <label for="gender"><b>Gender:</b></label><br>
@@ -86,13 +123,12 @@
                         <div class="form-group">
                             <label for="birthday"><b>Birthday:</b></label>
                             <input type="date" id="birthdate" name="dob" placeholder="yyyy-mm-dd" value="<%= data['birthdate'] %>" min="1980-01-01" max="2000-01-01" required>    
+                            <div id="birthdateError"></div>
                         </div>
                         <div class="form-group">
                             <input type="submit" class="btn btn-primary my-4" value="Edit" >
                             <a href="/users" class="btn btn-primary my-4">Back</a>
-                            <!-- <input type="submit" class="btn btn-primary my-4" value="Back"> -->
-                            <!-- <button class="btn btn-primary my-4">Add User</button> -->
-                        </div>
+                        </div>                    
                     </form>
                 </div>
             </div>

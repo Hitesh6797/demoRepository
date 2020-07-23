@@ -1,6 +1,7 @@
 const Sequelize = require("sequelize");
 
 const sequelize = require("../util/database");
+
 module.exports= (sequelize,Sequelize) => {
     const User = sequelize.define('userdetails', {
         // // attributes
@@ -36,9 +37,8 @@ module.exports= (sequelize,Sequelize) => {
           fields: ['email'],
           unique: true,
         }]
-    }
-    );
-return User;    
+    });
+    return User;    
 }
 
 // module.exports =  User ;

@@ -1,49 +1,5 @@
-  <script type = "text/javascript" src = "http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
-  <script type="text/javascript">
-    $(document).ready(function () {
-  
-    $('#adminLogin').on('submit', function(e) {
-        e.preventDefault();
-  
-        var data = {
-            "email": $('#adminLoginEmail').val(),
-            "password": $('#adminLoginPassword').val(),
-          }
-        var result = JSON.stringify(data)
-        $.ajax({
-            url: 'admin/login',
-            type: 'POST',
-            contentType: 'application/json; charset=utf-8',     
-            data: result,
-            success: function(data) {
-              console.log(data);
-              window.location =  '/dashboard';
-            },
-            error: function(err){
-              console.log(err);
-              let locals = err.responseJSON.errorMessage;
-
-              if(err.responseJSON){
-                if(locals.email && locals.password){
-                  let email = err.responseJSON.errorMessage.email.msg
-                  let password = err.responseJSON.errorMessage.password.msg
-                  document.getElementById("emailError").innerHTML = `<strong style="color:red;">${email}</strong> `;        
-                  document.getElementById("passwordError").innerHTML = `<strong style="color:red;">${password}</strong> `;        
-                }
-                else if(locals.email) {
-                  let email = err.responseJSON.errorMessage.email.msg
-                  document.getElementById("emailError").innerHTML = `<strong style="color:red;">${email}</strong> `;  
-                }
-                else if(locals.password) {
-                  let password = err.responseJSON.errorMessage.password.msg
-                  document.getElementById("passwordError").innerHTML = `<strong style="color:red;">${password}</strong> `;                 
-                } 
-              }  
-            }
-        })
-    })
-    });
-  </script>
+<script type = "text/javascript" src = "http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+<script type="text/javascript" src="http://192.168.42.80:3000/js/loginAjax.js"></script>  
 
 <body class="bg-default">
   <div class="main-content">
@@ -79,7 +35,7 @@
               </div>
               <div id="error"></div>
               <br>          
-              <form role="form" id="adminLogin" >
+              <form role="form" id="adminLogin" novalidate>
 
                 <div class="form-group">
                   <div class="input-group input-group-alternative">

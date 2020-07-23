@@ -23,51 +23,42 @@
                      
                 <div class="card-body px-lg-5 py-lg-5">
                     <form role="form" id="viewUserForm">
-                        
                         <div class="form-group">
                             <label for="Id"><b>Id:</b></label>
                             <span class="mb-0 text-sm"><%= data.id %></span>
-                            <!-- <input type="text" placeholder="Enter Your FirstName" name="fname" id="fname" value="<%= data['firstName'] %>" required>     -->
+                            <div style="width: 50%; float: right;" >
+                                <img src="http://192.168.42.80:3000/img/theme/<%= data.profile %>" alt="profile"  width="193" height="130">
+                            </div>
                         </div>
                         <div class="form-group">
                             <label for="firstname"><b>FirstName:</b></label>
                             <span class="mb-0 text-sm"><%= data.firstName %></span>
-                            <!-- <input type="text" placeholder="Enter Your FirstName" name="fname" id="fname" value="<%= data['firstName'] %>" required>     -->
                         </div>
                         <div class="form-group">
                             <label for="lastname"><b>LastName:</b></label>
                             <span class="mb-0 text-sm"><%= data.lastName %></span>
-                            <!-- <input type="text" placeholder="Enter Your LastName" name="lname" id="lname" value="<%= data['lastName'] %>" required>     -->
                         </div>
                         <div class="form-group">
                             <label for="email"><b>Email:</b></label>
                             <span class="mb-0 text-sm"><%= data.email %></span>
-                            <!-- <input type="email" placeholder="Enter Your Email" name="email" id="email" value="<%= data['email'] %>" required><br> -->
                         </div>
                         <div class="form-group" id="gender">
                             <label for="gender"><b>Gender:</b></label>
                             <span class="mb-0 text-sm"><%= data.gender %></span>
-                            <!-- <input type="radio" name="gender" value="male" id="male"> Male<br>
-                            <input type="radio" name="gender" value="female" id="female"> Female<br>
-                            <input type="radio" name="gender" value="other" id="other"> Other<br><br> -->
                         </div>
                         <div class="form-group">
                             <label for="birthday"><b>Birthdate:</b></label>
                             <span class="mb-0 text-sm" id="date"><%= data.birthdate %></span>
-                            <!-- <input type="date" id="birthdate" name="dob" placeholder="yyyy-mm-dd" value="<%= data['birthdate'] %>" min="1980-01-01" max="2000-01-01" required>     -->
                         </div>
                         <div class="form-group">
                             <label for="created"><b>createdAt:</b></label>
                             <span class="mb-0 text-sm"><%= data.createdAt %></span>
-                            <!-- <input type="date" id="birthdate" name="dob" placeholder="yyyy-mm-dd" value="<%= data['birthdate'] %>" min="1980-01-01" max="2000-01-01" required>     -->
                         </div>
                         <div class="form-group">
                             <label for="updated"><b>updatedAt:</b></label>
                             <span class="mb-0 text-sm"><%= data.updatedAt %></span>
-                            <!-- <input type="date" id="birthdate" name="dob" placeholder="yyyy-mm-dd" value="<%= data['birthdate'] %>" min="1980-01-01" max="2000-01-01" required>     -->
                         </div>
                         <div class="form-group">
-
                             <ul class="nav nav-pills justify-content-center">
                                 <li class="nav-item mr-2 mr-md-4" >
                                     <a class="nav-link py-2 px-3 active" href="/users/editUser/<%= data.id %>">
