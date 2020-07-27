@@ -14,7 +14,7 @@
                 e.preventDefault();
                 var id = "<%= data.id %>";
                 console.log(id);
-                var formData = new FormData();
+                var formData = new FormData(this);
                 var fname = document.getElementsByTagName("form");  
                 console.log(fname);
                 var data = {
@@ -28,8 +28,8 @@
                 $.ajax({
                     url: '/api/users/'+id,
                     type:'PUT',
-                    data: JSON.stringify(data),
-                    contentType: 'application/json; charset=utf-8',
+                    data: formData,
+                    contentType: false,
                     processData: false,
                     success: function(response){
                         console.log(response);
@@ -62,8 +62,8 @@
                                 document.getElementById("emailError").innerHTML = ``;                 
                             }
 
-                            if(locals.birthdate) {
-                                let birthdate = locals.birthdate.msg;
+                            if(locals.dob) {
+                                let birthdate = locals.dob.msg;
                                 document.getElementById("birthdateError").innerHTML = `<strong style="color:red;">${birthdate}</strong> `;  
                             } else {
                                 document.getElementById("birthdateError").innerHTML = ``; 

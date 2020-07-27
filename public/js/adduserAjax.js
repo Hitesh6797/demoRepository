@@ -1,16 +1,20 @@
 $(document).ready( function() {
-    $('#addUserForm').on('submit',(function(e) {
+    $('#addUserForm').submit(function(e) {
         e.preventDefault();
         
-        var formData = new FormData();
-        var files = $('#file')[0].files[0];
-        
-        formData.append('file',files);
-        formData.append('fname',$("input[name='fname']").val())
-        formData.append('lname',$("input[name='lname']").val())
-        formData.append('gender',$("input[name='gender']:checked").val())
-        formData.append('email',$("input[name='email']").val())
-        formData.append('birthdate',$("input[name='dob']").val())
+        // var formData = new FormData();    
+        var formData = new FormData(this);
+        // formData.append('birthdate',$("input[name='dob']").val())
+        // var files = $('#file')[0].files[0];
+
+        var data = {
+            "fname": $("input[name='fname']").val(),
+            "lname": $("input[name='lname']").val(),
+            "gender": $("input[name='gender']:checked").val(),
+            "email": $("input[name='email']").val(),
+            "dob": $("input[name='dob']").val(),
+            // "profile":files
+        }
         
         $.ajax({
             url: '/api/users',
@@ -49,15 +53,15 @@ $(document).ready( function() {
                         document.getElementById("emailError").innerHTML = ``;                 
                     }
 
-                    if(locals.birthdate) {
-                        let birthdate = locals.birthdate.msg;
+                    if(locals.dob) {
+                        let birthdate = locals.dob.msg;
                         document.getElementById("birthdateError").innerHTML = `<strong style="color:red;">${birthdate}</strong> `;  
                     } else {
                         document.getElementById("birthdateError").innerHTML = ``; 
                     }
                     
-                    if(locals.profile) {
-                        let profile = locals.profile.msg;
+                    if(locals.profile_photo) {
+                        let profile = locals.profile_photo.msg;
                         document.getElementById("profileError").innerHTML = `<strong style="color:red;">${profile}</strong> `;  
                     } else {
                         document.getElementById("profileError").innerHTML = ``;  
@@ -65,5 +69,6 @@ $(document).ready( function() {
                 }
             }
         });
-    }))
+        return false;
+    });
 });
