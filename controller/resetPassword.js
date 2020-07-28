@@ -22,7 +22,6 @@ exports.postReset = async (req, res, next) => {
         attributes: ["id", "email"],
         where: { email: req.body.email },
     });
-    console.log(user);
     if(user === null) {
         statusCode = 404;
         responseData = {
@@ -44,10 +43,9 @@ exports.postReset = async (req, res, next) => {
             subject: 'Password reset',
             html: `
             <p>You requested for reset password</p>
-            <p>Click this <a href="http://192.168.42.80:3000/reset-password/${token}">link</a> to set a new password.</p>
+            <p>Click this <a href="${process.env.URL}reset-password/${token}">link</a> to set a new password.</p>
             `
         });
-
         statusCode = 200;
         responseData = {
             user:user
@@ -58,14 +56,12 @@ exports.postReset = async (req, res, next) => {
   
 exports.getNewPassword = async (req, res, next) => {
     const token = req.params.token;
-    let statusCode = 200;
-    let responseData = {};
     let user = await Admin.findOne({
         attributes: ["id", "resetPasswordToken"],
         where:{ resetPasswordToken: token, resetPasswordExpires:{ [Op.gte]: new Date() } }
     })
     if(user) {
-        res.render('pages/new-password',{
+        res.render('login/new-password',{
             userId:user.id,
             passwordToken:user.resetPasswordToken           
         });
@@ -93,7 +89,6 @@ exports.postNewPassword = async (req, res, next) => {
         resetUser.password = hashedPassword;
         resetUser.resetPasswordToken = null;
         resetUser.resetPasswordExpires = null;
-        // console.log(resetUser);
         return resetUser.save();
     })
     .then(result => {

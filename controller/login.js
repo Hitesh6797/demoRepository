@@ -26,7 +26,6 @@ exports.login = async (req, res) => {
                 attributes: ["id", "email","password"],
                 where: { email: req.body.email },
             }).then(user => {return user}).catch(err => {throw err})
-            // console.log(user);
             if(user === null) {
                 statusCode = 404;
                 responseData = {
@@ -36,7 +35,6 @@ exports.login = async (req, res) => {
                 };        
             } else {
                 const result = await bcrypt.compare(req.body.password, user.password)
-                console.log(result);
                 if(result === true){
                     const accessToken = jwt.sign(
                         { username: req.body.email },
