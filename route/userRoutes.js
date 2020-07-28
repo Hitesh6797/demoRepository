@@ -1,38 +1,9 @@
-var Promise = require('promise');
 const fetch = require('node-fetch');
 require('dotenv').config();
-const db = require("../util/database");
-const User = db.users;
 const users = require('../controller/userController');
 const adminLogin = require('../controller/login');
-const { check } = require('express-validator');
-const multer = require('multer');
-
-const fileStorage = multer.diskStorage({
-    destination: function(req,file,cb){
-        cb(null, './public/img/theme/');
-    },
-    filename: function(req,file,cb){
-        cb(null, file.originalname + '-' + Date.now());
-    }
-});
-
-const fileFilter = (req,file,cb) => {
-    if(file.mimetype === 'image/jpeg' ||file.mimetype === 'image/jpg' || file.mimetype === 'image/png') {
-        cb(null,true);
-    } else {
-        cb(new Error('only jpg/jpeg/png allow'));    
-        
-    }
-};
-
-const upload = multer({
-    storage: fileStorage,
-    limits: {
-        fileSize: 1024*1024*5
-    },
-    fileFilter:fileFilter
-});
+const resetController = require('../controller/resetPassword');
+const fileUpload = require('express-fileupload');
 
 if (typeof localStorage === "undefined" || localStorage === null) {
     var LocalStorage = require('node-localstorage').LocalStorage;
@@ -40,20 +11,13 @@ if (typeof localStorage === "undefined" || localStorage === null) {
 }
 
 module.exports = function(app) {
-    
-    // Create a new Customer        
-    
-    app.post('/api/users', adminLogin.checkLogin,upload.single('file'), [
-        check('fname').not().isEmpty().withMessage('Firstname is required!')
-            .isAlpha().withMessage('Firstname doesnot contain special char and number!')
-            .isLength({min:3,max:12}).withMessage('Firstname length must be between 3 to 12 char long'),
-        check('lname').not().isEmpty().withMessage('Lastname is required!')
-            .isAlpha().withMessage('Lastname doesnot contain special char and number!')
-            .isLength({min:3,max:12}).withMessage('Lastname length must be between 3 to 12 char long'),
-        check('email').not().isEmpty().withMessage('Email is required!')
-            .isEmail().withMessage('Enter a valid Email address!')
-        ], users.create);
- 
+
+    // Create a new Customer
+    app.use(fileUpload({createParentPath:true}));
+    let POSTmiddleware = [adminLogin.checkLogin, users.validate('create'), users.create];
+
+    app.post('/api/users',POSTmiddleware);
+
     // Retrieve all Customer
     app.get('/api/users',adminLogin.checkLogin, users.findAll);
  
@@ -61,28 +25,24 @@ module.exports = function(app) {
     app.get('/api/users/:id',adminLogin.checkLogin, users.findByPk);
  
     // Update a Customer with Id
-    app.put('/api/users/:id',adminLogin.checkLogin,[
-        check('fname').not().isEmpty().withMessage('Firstname is required!')
-            .isAlpha().withMessage('Firstname doesnot contain special char and number!')
-            .isLength({min:3,max:12}).withMessage('Firstname length must be between 3 to 12 char long'),
-        check('lname').not().isEmpty().withMessage('Lastname is required!')
-            .isAlpha().withMessage('Lastname doesnot contain special char and number!')
-            .isLength({min:3,max:12}).withMessage('Lastname length must be between 3 to 12 char long'),
-        check('email').not().isEmpty().withMessage('Email is required!')
-            .isEmail().withMessage('Enter a valid Email address!')
-        ], users.update);
+    app.put('/api/users/:id',adminLogin.checkLogin,users.validate('edit'), users.update);
  
     // Delete a Customer with Id
     app.delete('/api/users/:id',adminLogin.checkLogin,users.delete);
 
     // // login with jwt token
-    app.post('/admin/login',[
-        check('email').not().isEmpty().withMessage('Email is required!')
-            .isEmail().withMessage('Please Enter valid email!'),
-        check('password').not().isEmpty().withMessage('Password is required!')
-            .isLength({min:6}).withMessage('Password must be 6 character long')
-        ],adminLogin.login);
+    app.post('/admin/login',users.validate('login'),adminLogin.login);
     
+    app.get('/forgot-password',function(req,res) {
+        res.render('pages/forgot-password');
+    })
+
+    app.post('/forgot-password',resetController.postReset);
+
+    app.get('/reset-password/:token',resetController.getNewPassword);
+
+    app.post('/reset-password',resetController.postNewPassword);
+
     app.get('/admin/logout',adminLogin.checkLogin,(req,res) => {
         localStorage.removeItem('token');
         res.send("logout success!!")
@@ -117,15 +77,20 @@ module.exports = function(app) {
     app.get('/users/editUser/:id', adminLogin.checkLogin ,async function(req,res) {
         var id = req.params.id;
         const result = await getOneUserDetails(url_get_one+id)
-        res.render('pages/editUser',{ data: result });
+        res.render('pages/editUser',{ data: result.data });
     })
 
     app.get('/users/viewUser/:id', adminLogin.checkLogin ,async function(req,res) {
         var id = req.params.id;
         const result = await getOneUserDetails(url_get_one+id)
-        res.render('pages/viewUser',{ data: result });
+        console.log(result);
+        res.render('pages/viewUser',{ data: result.data });
     })
 
+    app.get('/blog',function(req,res){
+        res.render('pages/blogdetails');
+    });
+      
     app.get('/',function(req,res){
         res.render('pages/login');
     });
@@ -152,7 +117,7 @@ module.exports = function(app) {
     app.get('/tables' ,adminLogin.checkLogin, function(req, res) {
         res.render('pages/tables');
     });  
-    app.get('*', function(req, res){
-        res.render('pages/404');
-    })
+    // app.get('*', function(req, res){
+    //     res.render('pages/404');
+    // })
 }

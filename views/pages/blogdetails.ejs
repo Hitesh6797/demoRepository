@@ -1,0 +1,62 @@
+<body>
+<!-- Sidenav -->
+<%- include ('../partials/sidebar') %>
+<!-- Main content -->
+<div class="main-content">
+    <!-- Top navbar -->
+    <%- include ('../partials/navbar') %>
+    <!-- Header -->
+    <%- include ('../partials/header') %>
+    <!-- Page content -->
+    <div class="container-fluid mt--7">
+        <!-- Table -->
+        <!-- Dark table -->
+        <div class="row mt-5">
+        <div class="col mt-7">
+            <div id="data"></div>
+
+            <ul class="nav nav-pills justify-content-end">
+                <li class="nav-item mr-2 mr-md-4" >
+                    <div class="btn-wrapper text-center" >
+                        <!-- "nav-link py-2 px-3 active" -->
+                        <a href="/blog/addblog" class='btn btn-neutral btn-icon' style="background-color: #4A69F2;">
+                            <!-- <i class="ni ni-fat-add">Add User</i> -->
+                            <span class="btn-inner--text" style="color: black;">+ Add Blog</span>
+                            <!-- <span class="d-md-none">M</span> -->
+                        </a>
+                    </div>
+                </li>
+            </ul>
+            <br>
+            <div class="card bg-default shadow">
+                <div class="card-header bg-transparent border-0">
+                <h3 class="text-white mb-0">Blog Details</h3>
+            </div>
+            <div class="table-responsive">
+                <table class="table align-items-center table-light table-flush">
+                <thead class="thead-light">
+                    <tr>
+                    <th scope="col">Id</th>
+                    <th scope="col">Title</th>
+                    <th scope="col">Description</th>
+                    <th scope="col">Publish_date</th>
+                    <th scope="col">Created_by</th>
+                    <th scope="col"></th>
+                    </tr>
+                </thead>
+                <tbody>
+                
+                </tbody>
+                </table>
+            </div>
+            </div>
+        </div>
+        </div>
+    <!-- Footer -->
+    <%- include ('../partials/footer') %>
+    </div>
+</div>
+
+<!-- Include scripts -->
+<%- include ('../partials/scripts') %>
+</body>

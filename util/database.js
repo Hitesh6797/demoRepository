@@ -19,7 +19,8 @@ db.sequelize = sequelize;
  
 //Models/tables
 db.users = require('../models/user')(sequelize, Sequelize);
- 
+db.admin = require('../models/admin')(sequelize,Sequelize);
+db.blog = require('../models/blog')(sequelize,Sequelize);
 module.exports = db;
 
 // module.exports = sequelize;
