@@ -40,7 +40,7 @@ exports.postReset = async (req, res, next) => {
 
         transporter.sendMail({ 
             to: req.body.email,
-            from: 'hjp6797@gmail.com',
+            from: process.env.fromMail,
             subject: 'Password reset',
             html: `
             <p>You requested for reset password</p>
