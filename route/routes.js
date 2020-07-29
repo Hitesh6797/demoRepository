@@ -121,8 +121,11 @@ module.exports = function(app) {
         res.render('blog/addblog');
     })
 
-    // GET Retrieve all Customer
+    // GET Retrieve all blog
     app.get('/api/blog',adminLogin.checkLogin, blogController.blogAll);
+
+    // GET one blog 
+    app.get('/api/blog/:id',adminLogin.checkLogin, blogController.blogById);
 
     // POST add Blog page
     app.post('/api/addblog',blogController.validate('create'),blogController.blogCreate);
@@ -132,7 +135,14 @@ module.exports = function(app) {
 
     // DELETE  a blog with its Id and who created by its id
     app.delete('/api/blog/:id/:loginId',adminLogin.checkLogin,blogController.deleteBlog);
-    
+
+    const url_get_one_blog = process.env.url + 'api/blog/'
+    app.get('/blog/editblog/:id', adminLogin.checkLogin ,async function(req,res) {
+        var id = req.params.id;
+        const result = await getOneUserDetails(url_get_one_blog+id)
+        res.render('blog/editblog',{ data: result.data });
+    })
+
     app.get('/403', function(req,res) {
         res.render('pages/403');
     });
