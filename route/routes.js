@@ -3,6 +3,7 @@ require('dotenv').config();
 const users = require('../controller/userController');
 const adminLogin = require('../controller/login');
 const resetController = require('../controller/resetPassword');
+const blogController = require('../controller/blogController');
 const fileUpload = require('express-fileupload');
 
 if (typeof localStorage === "undefined" || localStorage === null) {
@@ -58,10 +59,11 @@ module.exports = function(app) {
         res.send("logout success!!")
     })
 
-    const url_get_all = process.env.url +'api/users';
-    const getAllUserDetails = async url_get_all => {
+    // get all user detail
+    const url_get_all_user = process.env.url +'api/users';
+    const getAllUserDetails = async url_get_all_user => {
     try {
-        const response = await fetch(url_get_all);
+        const response = await fetch(url_get_all_user);
         const json = await response.json();
         return json
     } catch (error) {
@@ -69,16 +71,17 @@ module.exports = function(app) {
     }   
     };
 
-    // GET All user details 
+    // GET all user details 
     app.get('/users', adminLogin.checkLogin, async function(req,res) {            
-        const result =  await getAllUserDetails(url_get_all)
+        const result =  await getAllUserDetails(url_get_all_user)
         res.render('user/userDetails',{ user:result.data });
     });
     
-    const url_get_one = process.env.url+'api/users/';
-    const getOneUserDetails = async url_get_one => {
+    // get one use detail
+    const url_get_one_user = process.env.url+'api/users/';
+    const getOneUserDetails = async url_get_one_user => {
     try {
-        const response = await fetch(url_get_one);
+        const response = await fetch(url_get_one_user);
         const json = await response.json();
         return json;
     } catch (error) {
@@ -89,14 +92,14 @@ module.exports = function(app) {
     // GET edit user page by its id
     app.get('/users/editUser/:id', adminLogin.checkLogin ,async function(req,res) {
         var id = req.params.id;
-        const result = await getOneUserDetails(url_get_one+id)
+        const result = await getOneUserDetails(url_get_one_user+id)
         res.render('user/editUser',{ data: result.data });
     })
 
     // GET views user by its id
     app.get('/users/viewUser/:id', adminLogin.checkLogin ,async function(req,res) {
         var id = req.params.id;
-        const result = await getOneUserDetails(url_get_one+id)
+        const result = await getOneUserDetails(url_get_one_user+id)
         console.log(result);
         res.render('user/viewUser',{ data: result.data });
     })
@@ -107,10 +110,29 @@ module.exports = function(app) {
     });
 
     // GET blog details
-    app.get('/blog',function(req,res){
-        res.render('blog/blogdetails');
+    const url_get_all_blog = process.env.url + 'api/blog'
+    app.get('/blog', adminLogin.checkLogin, async function(req,res) {            
+        const result =  await getAllUserDetails(url_get_all_blog);
+        res.render('blog/blogdetails',{ user:result.data });
     });
 
+    // GET add Blog page
+    app.get('/blog/addblog',function(req,res){
+        res.render('blog/addblog');
+    })
+
+    // GET Retrieve all Customer
+    app.get('/api/blog',adminLogin.checkLogin, blogController.blogAll);
+
+    // POST add Blog page
+    app.post('/api/addblog',blogController.validate('create'),blogController.blogCreate);
+
+    // PUT Update a blog with its Id and who created by its id
+    app.put('/api/blog/:id/:loginId',adminLogin.checkLogin,blogController.validate('edit'), blogController.blogUpdate);
+
+    // DELETE  a blog with its Id and who created by its id
+    app.delete('/api/blog/:id/:loginId',adminLogin.checkLogin,blogController.deleteBlog);
+    
     app.get('/403', function(req,res) {
         res.render('pages/403');
     });

@@ -45,6 +45,7 @@ exports.login = async (req, res) => {
                     statusCode = 200;
                     responseData = {
                         code: statusCode,
+                        user:user,
                         data: 'email and password match!'
                     }   
                 } else {

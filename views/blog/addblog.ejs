@@ -1,0 +1,120 @@
+<script type = "text/javascript" src = "http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+<script>
+$(document).ready(function () {
+  
+  $('#addBlogForm').on('submit', function(e) {
+      e.preventDefault();
+      var loginId = localStorage.getItem('adminID')
+        var data = {
+            "title": $('#title').val(),
+            "description": $('#description').val(),
+            "publish": $('#publish').val(),
+            "loginId": loginId
+        }
+        var result = JSON.stringify(data)
+        $.ajax({
+            url: '/api/addblog',
+            type: 'POST',
+            contentType: 'application/json; charset=utf-8',     
+            data: result,
+            success: function(data) {
+              console.log(data);
+              window.location =  '/blog';
+            },
+            error: function(err) {
+                console.log(err);
+                console.log(err);
+              let locals = err.responseJSON.errorMessage;
+
+              if(err.responseJSON){
+                
+                if(locals.title) {
+                  let title = err.responseJSON.errorMessage.title.msg
+                  document.getElementById("titleError").innerHTML = `<strong style="color:red;">${title}</strong> `;  
+                } else {
+                  document.getElementById("titleError").innerHTML = ``;
+                }
+
+                if(locals.description) {
+                  let description = err.responseJSON.errorMessage.description.msg
+                  document.getElementById("descriptionError").innerHTML = `<strong style="color:red;">${description}</strong> `;                 
+                } else {
+                  document.getElementById("descriptionError").innerHTML = ``;                 
+                } 
+                
+                if(locals.publish) {
+                  let publish = err.responseJSON.errorMessage.publish.msg
+                  document.getElementById("publishError").innerHTML = `<strong style="color:red;">${publish}</strong> `;                 
+                } else {
+                  document.getElementById("publishError").innerHTML = ``;                 
+                  } 
+              }  
+            }
+        })
+    })
+})
+</script>
+    
+<body>
+    <!-- Sidenav -->
+    <%- include ('../partials/sidebar') %>
+    <!-- Main content -->
+    <div class="main-content">
+      <!-- Top navbar -->
+      <%- include ('../partials/navbar') %>
+      <!-- Header -->
+      <%- include ('../partials/header') %>
+      <!-- Page content -->
+      <div class="container-fluid mt--7">
+            <!-- Table -->
+            <!-- Dark table -->
+            <div class="row mt-5">
+            <div class="col mt-7">
+                <div class="card bg-default shadow">
+                    <div class="card-header bg-transparent border-0">
+                        <h3 class="text-white mb-0" ><a href="/blog">Blog</a> / Add New Blog</h3>
+                    </div>
+                </div>
+                <br>
+                <div class="card-body px-lg-5 py-lg-5">
+                    <form id="addBlogForm" novalidate>
+                        
+                        <div class="form-group" style="width: 50%; float: center;">
+                            <div class="input-group input-group-alternative">
+                              <input class="form-control" placeholder="Title" type="text" name="title" id="title" required>
+                            </div>
+                            <div id="titleError"></div>
+                        </div>
+                
+                        <div class="form-group" style="width: 50%; float: center;">
+                            <div class="input-group input-group-alternative">
+                                <textarea rows="4" cols="50" placeholder="Enter description of blog" type="text" name="description" id="description" required></textarea>
+                            </div>
+                            <div id="descriptionError"></div>
+                        </div>
+
+                        <div class="form-group" style="width: 50%; float: center;">
+                            <label for="publish">Publish on:</label> <br/>
+                            <div class="input-group input-group-alternative">
+                                <input type="date" placeholder="yyyy/mm/dd" name="publish" id="publish" required>
+                            </div>
+                            <div id="publishError"></div>                    
+                        </div>
+
+                        <div class="form-group">
+                            <input type="submit" class="btn btn-primary my-4" value="Add Blog" id="submit_form">
+                        <div id="formdata"></div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <!-- Footer -->
+        <%- include ('../partials/footer') %>
+      </div>
+    </div>
+  
+    <!-- Include scripts -->
+    <%- include ('../partials/scripts') %>
+  </body>
+  

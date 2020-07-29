@@ -1,6 +1,6 @@
 const db = require("../util/database");
 const User = db.users;
-const { check,validationResult, matchedData } = require('express-validator');
+const { check,validationResult } = require('express-validator');
 const fs = require('fs');
 
 // POST User details to database

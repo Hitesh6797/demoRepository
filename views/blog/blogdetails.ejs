@@ -1,3 +1,26 @@
+<script type = "text/javascript" src = "http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+
+<script>
+    var loginId = localStorage.getItem('adminID')
+    $(document).ready(function(){
+        $(".delete").on('click',(function(e){
+            $target =  $(e.target);
+            var id = $target.attr('user-id');
+            $.ajax({
+                url: '/api/blog/'+id+'/'+loginId,
+                type: 'DELETE',
+                contentType: 'application/json; charset=utf-8',
+                success: function(response){
+                    console.log(response);
+                    // window.location = '/blog';
+                },
+                error: function(err){
+                    console.log(err);
+                }
+            });
+        }));
+    }); 
+</script>
 <body>
 <!-- Sidenav -->
 <%- include ('../partials/sidebar') %>
@@ -45,7 +68,57 @@
                     </tr>
                 </thead>
                 <tbody>
-                
+                    <% user.forEach(function(users) {  %>
+                        <tr>
+                        <td scope="row">
+                            <div class="media align-items-center">
+                            <div class="media-body">
+                                <span class="mb-0 text-sm"><%= users.id %></span>
+                            </div>
+                            </div>
+                        </td>
+                        <th scope="row">
+                            <div class="media align-items-center">
+                            <div class="media-body">
+                                <span class="mb-0 text-sm"><%= users.title %></span>
+                            </div>
+                            </div>
+                        </th>
+                        <th scope="row">
+                            <div class="media align-items-center">
+                            <div class="media-body">
+                                <span class="mb-0 text-sm"><%= users.description %></span>
+                            </div>
+                            </div>
+                        </th>
+                        <td scope="row">
+                            <div class="media align-items-center">
+                            <div class="media-body">
+                                <span class="mb-0 text-sm"><%= users.publish_date %></span>
+                            </div>
+                            </div>
+                        </td>
+                        <td scope="row">
+                            <div class="media align-items-center">
+                            <div class="media-body">
+                                <span class="mb-0 text-sm"><%= users.created_by %></span>
+                            </div>
+                            </div>
+                        </td>
+                        <td class="text-right">
+                            <div class="dropdown">
+                            <a class="btn btn-sm btn-icon-only text-dark" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <i class="fas fa-ellipsis-v"></i>
+                            </a>
+                            <div class="dropdown-menu dropdown-menu-right dropdown-menu-arrow">
+                                <a class="dropdown-item edit" href="">Edit</a>
+                                <a class="dropdown-item delete" href= "" user-id="<%= users.id %>">Delete</a>
+                                <a class="dropdown-item" href="">Info</a> 
+                            </div>
+                            </div>
+                        </td>
+                        </tr>
+                        <% }) %>
                 </tbody>
                 </table>
             </div>
